@@ -1,38 +1,19 @@
 name: Build Docker Images
 
-on: 
-  schedule:
-    - cron: '0 0 * * *' # At 0:00 every day
+on: push
+  # schedule:
+  #   - cron: '0 0 * * *' # At 0:00 every day
 
 jobs:
   build-images:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Publish Apache Image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: chivincent-rosetta/laravel-php
-          username: ${{ github.actor }}
-          password: ${{ secrets.CR_TOKEN }}
-          registry: ghcr.io
-          dockerfile: php-apache.dockerfile
-          tags: "apache"
-      - name: Publish CLI Image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: chivincent-rosetta/laravel-php
-          username: ${{ github.actor }}
-          password: ${{ secrets.CR_TOKEN }}
-          registry: ghcr.io
-          dockerfile: php-cli.dockerfile
-          tags: "latest,cli"
-      - name: Publish FPM Image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with: 
-          name: chivincent-rosetta/laravel-php
-          username: ${{ github.actor }}
-          password: ${{ secrets.CR_TOKEN }}
-          registry: ghcr.io
-          dockerfile: php-fpm.dockerfile
-          tags: "fpm"
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Builder instance name
+        run: echo ${{ steps.buildx.outputs.name }}
+      - name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
+      
