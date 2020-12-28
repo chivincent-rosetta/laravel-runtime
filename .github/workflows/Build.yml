@@ -20,4 +20,25 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.CR_TOKEN }}
+      - name: Build and Push php-apache
+        uses: docker/build-push-action@v2
+        with:
+          file: ./php-apache.dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: chivincent-rosetta/laravel-php:apache
+      - name: Build and Push php-cli
+        uses: docker/build-push-action@v2
+        with:
+          file: ./php-cli.dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: chivincent-rosetta/laravel-php:cli
+      - name: Build and Push php-fpm
+        uses: docker/build-push-action@v2
+        with:
+          file: ./php-fpm.dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: chivincent-rosetta/laravel-php:fpm
       
