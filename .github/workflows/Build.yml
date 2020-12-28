@@ -1,8 +1,8 @@
 name: Build Docker Images
 
-on: push
-  # schedule:
-  #   - cron: '0 0 * * *' # At 0:00 every day
+on:
+  schedule:
+    - cron: '0 0 * * *' # At 0:00 every day
 
 jobs:
   build-images:
