@@ -1,6 +1,6 @@
 name: Build Docker Images
 
-on: 
+on:
   schedule:
     - cron: '0 0 * * *' # At 0:00 every day
 
@@ -9,30 +9,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Publish Apache Image
-        uses: elgohr/Publish-Docker-Github-Action@master
+      # - name: Setup QEMU
+      #   uses: docker/setup-qemu-action@v1
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
         with:
-          name: chivincent-rosetta/laravel-php
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.CR_TOKEN }}
-          registry: ghcr.io
-          dockerfile: php-apache.dockerfile
-          tags: "apache"
-      - name: Publish CLI Image
-        uses: elgohr/Publish-Docker-Github-Action@master
+      - name: Build and Push php-apache
+        uses: docker/build-push-action@v2
         with:
-          name: chivincent-rosetta/laravel-php
-          username: ${{ github.actor }}
-          password: ${{ secrets.CR_TOKEN }}
-          registry: ghcr.io
-          dockerfile: php-cli.dockerfile
-          tags: "latest,cli"
-      - name: Publish FPM Image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with: 
-          name: chivincent-rosetta/laravel-php
-          username: ${{ github.actor }}
-          password: ${{ secrets.CR_TOKEN }}
-          registry: ghcr.io
-          dockerfile: php-fpm.dockerfile
-          tags: "fpm"
+          file: ./php-apache.dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/chivincent-rosetta/laravel-php:apache
+      - name: Build and Push php-cli
+        uses: docker/build-push-action@v2
+        with:
+          file: ./php-cli.dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/chivincent-rosetta/laravel-php:cli
+      - name: Build and Push php-fpm
+        uses: docker/build-push-action@v2
+        with:
+          file: ./php-fpm.dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/chivincent-rosetta/laravel-php:fpm
+      

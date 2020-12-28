@@ -22,6 +22,13 @@ $ docker run --rm -it ghcr.io/chivincent-rosetta/laravel-php:cli /bin/bash
 $ docker run --rm -it ghcr.io/chivincent-rosetta/laravel-php:apache /bin/bash
 ```
 
+## Q&A
+
+### Why not ARM?
+
+- PHP JIT in PHP 8.0 is not support ARM.
+- QEMU + Buildx for `linux/arm64` is slow 5 times than `linux/amd64`.
+
 ## License
 
 This repository is under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html) license.
